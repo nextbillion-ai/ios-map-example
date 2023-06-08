@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C70571C2A31BAEB00FC13EC /* AnnotationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C70571B2A31BAEB00FC13EC /* AnnotationsViewController.swift */; };
+		0C70571F2A31BB3F00FC13EC /* points.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 0C70571E2A31BB3E00FC13EC /* points.geojson */; };
 		41AE10062A28413900E6233F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41AE10052A28413900E6233F /* AppDelegate.swift */; };
 		41AE10082A28413900E6233F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41AE10072A28413900E6233F /* SceneDelegate.swift */; };
 		41AE100A2A28413900E6233F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41AE10092A28413900E6233F /* ViewController.swift */; };
@@ -71,6 +73,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0C70571B2A31BAEB00FC13EC /* AnnotationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationsViewController.swift; sourceTree = "<group>"; };
+		0C70571E2A31BB3E00FC13EC /* points.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = points.geojson; sourceTree = "<group>"; };
 		41AE10022A28413900E6233F /* ios-map-example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-map-example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		41AE10052A28413900E6233F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		41AE10072A28413900E6233F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -132,6 +136,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0C70571D2A31BB3E00FC13EC /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				0C70571E2A31BB3E00FC13EC /* points.geojson */,
+			);
+			path = Fixtures;
+			sourceTree = "<group>";
+		};
 		41AE0FF92A28413900E6233F = {
 			isa = PBXGroup;
 			children = (
@@ -156,6 +168,8 @@
 		41AE10042A28413900E6233F /* ios-map-example */ = {
 			isa = PBXGroup;
 			children = (
+				0C70571D2A31BB3E00FC13EC /* Fixtures */,
+				0C70571B2A31BAEB00FC13EC /* AnnotationsViewController.swift */,
 				41AE10402A2845A600E6233F /* AddMapStyleLayerViewController.swift */,
 				41AE10462A2845A900E6233F /* AnimateMapLayerViewController.swift */,
 				41AE103B2A2845A400E6233F /* Custom-Location-Source.swift */,
@@ -318,6 +332,7 @@
 			files = (
 				41AE10122A28413A00E6233F /* LaunchScreen.storyboard in Resources */,
 				41AE100F2A28413A00E6233F /* Assets.xcassets in Resources */,
+				0C70571F2A31BB3F00FC13EC /* points.geojson in Resources */,
 				41AE100D2A28413900E6233F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -356,6 +371,7 @@
 				41AE10502A2845AB00E6233F /* Custom-PuckView.swift in Sources */,
 				41AE10552A2845AB00E6233F /* Custom-Polyline.swift in Sources */,
 				41AE10562A2845AB00E6233F /* SceneDelegate.swift in Sources */,
+				0C70571C2A31BAEB00FC13EC /* AnnotationsViewController.swift in Sources */,
 				41AE10542A2845AB00E6233F /* CustomUserLocationAnnotationView.swift in Sources */,
 				41AE10082A28413900E6233F /* SceneDelegate.swift in Sources */,
 				41AE10582A2845AB00E6233F /* HomeViewController.swift in Sources */,

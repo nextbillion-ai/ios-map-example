@@ -22,6 +22,7 @@ class HomeViewController: UITableViewController  {
             ViewModel(name: "Custom Pollyline View", viewController: PolylineViewController.self),
             ViewModel(name: "Custom Polygon View", viewController: PolygonViewController.self),
             ViewModel(name: "Custom Marker View", viewController: MarkerViewController.self),
+            ViewModel(name: "Custom Annotations View", viewController: AnnotationsViewController.self),
         ],
         "Map view delegate":[
             ViewModel(name: "Map view delegate", viewController: MapViewDelegateViewController.self),
