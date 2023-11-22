@@ -19,7 +19,7 @@ class HomeViewController: UITableViewController  {
         ],
         
         "Map Annotations":[
-            ViewModel(name: "Custom Pollyline View", viewController: PolylineViewController.self),
+            ViewModel(name: "Custom Polyline View", viewController: PolylineViewController.self),
             ViewModel(name: "Custom Polygon View", viewController: PolygonViewController.self),
             ViewModel(name: "Custom Marker View", viewController: MarkerViewController.self),
             ViewModel(name: "Custom Annotations View", viewController: AnnotationsViewController.self),

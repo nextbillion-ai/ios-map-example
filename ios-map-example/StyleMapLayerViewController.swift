@@ -77,21 +77,22 @@ class StyleMapLayerViewController: UIViewController {
     }
     
     func styleBuildingExtrusions() {
-        let layer = self.nbMapView.style?.layer(withIdentifier: "building-3d") as? NGLFillExtrusionStyleLayer
+        let layer = self.nbMapView.style?.layer(withIdentifier: "3D - Building") as? NGLFillExtrusionStyleLayer
         // Set the fill color to that of the existing building footprint layer, if it exists.
         layer?.fillExtrusionColor = NSExpression(forConstantValue: UIColor.purple)
         layer?.fillExtrusionOpacity = NSExpression(forConstantValue: 0.55)
-        
+        layer?.fillExtrusionHeight = NSExpression(forConstantValue: 5)
+        layer?.isVisible = true
     
         nbMapView.setCenter(CLLocationCoordinate2DMake(12.98780156, 77.59956748), zoomLevel: 18, animated: true)
 
     }
     
     func addBuildingExtrusions() {
-        let source = self.nbMapView.style?.source(withIdentifier: "openmaptiles")
+        let source = self.nbMapView.style?.source(withIdentifier: "vectorTiles")
         if let source = source, self.nbMapView.style?.layer(withIdentifier: "extrudedBuildings") == nil {
             let layer = NGLFillExtrusionStyleLayer(identifier: "extrudedBuildings", source: source)
-            layer.sourceLayerIdentifier = "building"
+            layer.sourceLayerIdentifier = "buildings"
             layer.fillExtrusionBase = NSExpression(forConstantValue: 20)
             layer.fillExtrusionHeight = NSExpression(forConstantValue: 50)
             // Set the fill color to that of the existing building footprint layer, if it exists.
@@ -111,7 +112,7 @@ class StyleMapLayerViewController: UIViewController {
     
     func styleWaterWithFunction() {
         
-        let waterLayer = self.nbMapView.style?.layer(withIdentifier: "water") as? NGLFillStyleLayer
+        let waterLayer = self.nbMapView.style?.layer(withIdentifier: "Water - Fill") as? NGLFillStyleLayer
         let waterColorStops: [NSNumber: UIColor] = [
             6.0: UIColor.yellow,
             8.0: UIColor.blue,
@@ -136,7 +137,7 @@ class StyleMapLayerViewController: UIViewController {
     
     func styleRoadsWithFunction() {
         
-        let roadLayer = self.nbMapView.style?.layer(withIdentifier: "road_primary") as? NGLLineStyleLayer
+        let roadLayer = self.nbMapView.style?.layer(withIdentifier: "Surface - Primary road") as? NGLLineStyleLayer
         roadLayer?.lineColor = NSExpression(forConstantValue: UIColor.black)
         
         let lineWidthStops: [NSNumber: NSNumber] = [
