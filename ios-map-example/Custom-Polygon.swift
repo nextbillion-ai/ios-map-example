@@ -15,6 +15,7 @@ class PolygonViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         nbMapView = NGLMapView(frame:self.view.bounds)
+        nbMapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         nbMapView.delegate = self
         drawPolygon()
     }

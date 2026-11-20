@@ -300,7 +300,8 @@ extension MapsCameraViewController: UITableViewDelegate, UITableViewDataSource {
      }
     
     func dismissSettings(type: CameraType) {
-        dismiss(animated: true)
-        performeSettings(type: type)
+        dismiss(animated: true) { [weak self] in
+            self?.performeSettings(type: type)
+        }
     }
 }

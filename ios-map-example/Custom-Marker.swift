@@ -97,7 +97,9 @@ extension MarkerViewController: NGLMapViewDelegate {
         `nil` if you want to display the default marker image or an annotation view.
      */
     func mapView(_ mapView: NGLMapView, imageFor annotation: NGLAnnotation) -> NGLAnnotationImage?{
-        return NGLAnnotationImage(image: UIImage(named: "marker")!,reuseIdentifier:"Marker-Identifier")
+        if let reused = mapView.dequeueReusableAnnotationImage(withIdentifier: "Marker-Identifier") { return reused }
+        guard let image = UIImage(named: "marker") else { return nil }
+        return NGLAnnotationImage(image: image, reuseIdentifier: "Marker-Identifier")
     }
     
     /**

@@ -1,17 +1,20 @@
 import Nbmap
 import CoreLocation
 
+/// Bridges Core Location updates into the SDK's location-manager contract.
+/// Assign this adapter to mapView.locationManager before enabling showsUserLocation.
 class CustomMapLocationManager: NSObject,NGLLocationManager {
     
-    var delegate: NGLLocationManagerDelegate? {
-        didSet {
-            locationManager.delegate = self
-        }
-    }
-    
-    // Replay with your own location manager
+    // The map owns this manager; its delegate must not own the map back.
+    weak var delegate: NGLLocationManagerDelegate?
     private let locationManager = CLLocationManager()
-    
+
+    override init() {
+        super.init()
+        // Configure Core Location once, independently of changes to the SDK delegate.
+        locationManager.delegate = self
+    }
+
     var headingOrientation: CLDeviceOrientation {
         get {
             return locationManager.headingOrientation
@@ -85,11 +88,12 @@ class CustomMapLocationManager: NSObject,NGLLocationManager {
         locationManager.stopUpdatingLocation()
     }
     
+    // Release sensor work on teardown. Avoid assigning our own delegate here:
+    // the map may already be deallocating and clearing that same relationship.
     deinit {
         locationManager.stopUpdatingLocation()
         locationManager.stopUpdatingHeading()
         locationManager.delegate = nil
-        delegate = nil
     }
     
 }
@@ -97,6 +101,8 @@ class CustomMapLocationManager: NSObject,NGLLocationManager {
 // MARK: - CLLocationManagerDelegate
 extension CustomMapLocationManager : CLLocationManagerDelegate {
   
+    // Forward this adapter as the sender because it is the NGLLocationManager
+    // instance owned by the map, rather than the wrapped CLLocationManager.
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         delegate?.locationManager(self, didUpdate: locations)
     }

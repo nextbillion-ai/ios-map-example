@@ -43,6 +43,7 @@ class StyleMapLayerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         nbMapView = NGLMapView(frame:self.view.bounds)
+        nbMapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         button = UIButton(type: .system)
         button.setTitle("Settings", for: .normal)
         button.addTarget(self, action: #selector(showSetings), for: .touchUpInside)
@@ -120,7 +121,9 @@ class StyleMapLayerViewController: UIViewController {
             12.0: UIColor.green,
             14.0: UIColor.blue
         ]
-        let fillColorExpression = NSExpression(format: "ngl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)", waterColorStops)
+        // Use the SDK's expression builder with numeric zoom stops. This keeps
+        // function construction explicit when adapting the example to another style.
+        let fillColorExpression = NSExpression(forNGLInterpolating: .zoomLevelVariable, curveType: .linear, parameters: nil, stops: NSExpression(forConstantValue: waterColorStops))
         
         waterLayer?.fillColor = fillColorExpression
         
@@ -145,7 +148,7 @@ class StyleMapLayerViewController: UIViewController {
             10: 10,
             15: 15
         ]
-        let lineWidthExpression = NSExpression(format: "ngl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)", lineWidthStops)
+        let lineWidthExpression = NSExpression(forNGLInterpolating: .zoomLevelVariable, curveType: .linear, parameters: nil, stops: NSExpression(forConstantValue: lineWidthStops))
         roadLayer?.lineWidth = lineWidthExpression
         roadLayer?.lineGapWidth = lineWidthExpression
         
@@ -155,7 +158,7 @@ class StyleMapLayerViewController: UIViewController {
             13: UIColor.yellow,
             16: UIColor.cyan
         ]
-        roadLayer?.lineColor = NSExpression(format: "ngl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)", roadLineColorStops)
+        roadLayer?.lineColor = NSExpression(forNGLInterpolating: .zoomLevelVariable, curveType: .linear, parameters: nil, stops: NSExpression(forConstantValue: roadLineColorStops))
         
         roadLayer?.isVisible = true
         
@@ -203,7 +206,8 @@ extension StyleMapLayerViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func dismissSettings(type: ActionType) {
-        dismiss(animated: true)
-        performeSettings(type: type)
+        dismiss(animated: true) { [weak self] in
+            self?.performeSettings(type: type)
+        }
     }
 }

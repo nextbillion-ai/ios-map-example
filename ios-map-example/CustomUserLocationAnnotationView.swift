@@ -12,7 +12,8 @@ class CustomUserLocationAnnotationView: NGLUserLocationAnnotationView {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
+        backgroundColor = .clear
     }
     
     override func update() {
@@ -32,6 +33,7 @@ class CustomUserLocationAnnotationView: NGLUserLocationAnnotationView {
     }
     
     func updateFrame(with size: CGSize) {
+        guard size.width.isFinite, size.height.isFinite, size.width > 0, size.height > 0 else { return }
         if frame.size.equalTo(size) {
             return
         }
@@ -45,13 +47,19 @@ class CustomUserLocationAnnotationView: NGLUserLocationAnnotationView {
     }
     
     func accuracyInPoints() -> CGFloat {
-        guard let mapView = mapView, let userLocation = userLocation else {
-            return 0
-        }
-        let metersPerPoint = mapView.metersPerPoint(atLatitude: userLocation.coordinate.latitude)
-        return CGFloat((userLocation.location?.horizontalAccuracy ?? 0) / metersPerPoint)
+        guard let mapView, let location = userLocation?.location,
+              CLLocationCoordinate2DIsValid(location.coordinate),
+              location.horizontalAccuracy.isFinite, location.horizontalAccuracy >= 0 else { return 0 }
+        // Convert accuracy in meters to view points at the current latitude/zoom.
+        // Invalid accuracy or scale must never propagate into a UIView frame.
+        let metersPerPoint = mapView.metersPerPoint(atLatitude: location.coordinate.latitude)
+        guard metersPerPoint.isFinite, metersPerPoint > 0 else { return 0 }
+        let diameter = CGFloat(location.horizontalAccuracy / metersPerPoint)
+        guard diameter.isFinite else { return 0 }
+        // Poor accuracy at a high zoom must not allocate a gigantic backing layer.
+        return min(diameter, max(30, max(mapView.bounds.width, mapView.bounds.height)))
     }
-    
+
     override func draw(_ rect: CGRect) {
         if mapView?.userTrackingMode == .followWithCourse {
             drawCar()

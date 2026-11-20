@@ -54,24 +54,35 @@ class LocationStyleViewController: UIViewController {
     func performeSettings(tyle: LocationType) {
         switch tyle {
         case LocationType.UpdateToFollow:
+            nbMapView.showsUserLocation = true
             nbMapView.setUserTrackingMode(.follow,animated: true,completionHandler: nil)
             break
         case LocationType.UpdateToFollowWithCourse:
+            nbMapView.showsUserLocation = true
             nbMapView.setUserTrackingMode(.followWithCourse,animated: true,completionHandler: nil)
             break
         case LocationType.UpdateToFollowWithHeading:
+            nbMapView.showsUserLocation = true
             nbMapView.setUserTrackingMode(.followWithHeading,animated: true,completionHandler: nil)
             break
         case LocationType.HidePuckView:
+            // Marker visibility and camera tracking are separate settings.
+            nbMapView.showsUserLocation = false
             nbMapView.setUserTrackingMode(.none,animated: true,completionHandler: nil)
             break
         case LocationType.GetUserLocation:
             if let userLocation = nbMapView.userLocation {
-                let location = userLocation.location
+                // Permission and the first location fix arrive asynchronously;
+                // having a user-location object does not guarantee a location yet.
+                guard let location = userLocation.location else {
+                    navigationItem.prompt = "Location is not available yet."
+                    return
+                }
+                navigationItem.prompt = "Location available"
                 let isUpdating = userLocation.isUpdating
                 let title = userLocation.title
                 let subtitle = userLocation.subtitle ?? ""
-                print("location:" + location!.description)
+                print("location:" + location.description)
                 print("isUpdating:" + String(isUpdating))
                 print("title:" + title)
                 print("subtitle:" + subtitle)
@@ -331,7 +342,8 @@ extension LocationStyleViewController: UITableViewDelegate, UITableViewDataSourc
      }
     
     func dismissSettings(type: LocationType) {
-        dismiss(animated: true)
-        performeSettings(tyle: type)
+        dismiss(animated: true) { [weak self] in
+            self?.performeSettings(tyle: type)
+        }
     }
 }

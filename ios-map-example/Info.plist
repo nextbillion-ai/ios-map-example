@@ -7,7 +7,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>The application needs access to your location information in order to provide you with a better usage experience and personalized service. </string>
 	<key>NBMapAccessKey</key>
-	<string>your-secret-key</string>
+	<string>Your-Access-key</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
