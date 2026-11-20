@@ -250,6 +250,7 @@ class MapConfigViewController: UIViewController, NGLMapViewDelegate {
          Changing the value of this property updates the map view immediately. If you
          want to animate the change, use the `-setZoomLevel:animated:` method instead.
          */
+        mapView.setCenter(CLLocationCoordinate2D(latitude: 12.94798778, longitude: 77.57375084), animated: false)
         mapView.zoomLevel = 18
         /**
          * The minimum zoom level at which the map can be shown.
@@ -402,12 +403,12 @@ class MapConfigViewController: UIViewController, NGLMapViewDelegate {
         /**
          Get the current map style
          */
-        let style = nbMapView.style ?? NGLStyle()
+        let style = nbMapView.style
         
         /**
          Get the annotation object indicating the user’s current location.
          */
-        let userLocation = nbMapView.userLocation ?? NGLUserLocation()
+        let userLocation = nbMapView.userLocation
         
         /**
          Get the bool value that  whether the user may rotate the map, changing the direction.

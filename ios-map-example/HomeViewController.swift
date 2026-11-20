@@ -28,6 +28,7 @@ class HomeViewController: UITableViewController  {
             ViewModel(name: "Map view delegate", viewController: MapViewDelegateViewController.self),
         ],
         "Runtime Styling":[
+            ViewModel(name: "House Numbers", viewController: HouseNumberViewController.self),
             ViewModel(name: "Custom Map Style Layer", viewController: StyleMapLayerViewController.self),
             ViewModel(name: "Animate Map Style Layer", viewController: AnimateMapLayerViewController.self),
             ViewModel(name: "Add Map Style Layer", viewController: AddMapStyleLayerViewController.self)
@@ -47,6 +48,11 @@ class HomeViewController: UITableViewController  {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "Map Examples"
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
         tableView.dataSource = self
         tableView.delegate = self
     }
@@ -89,6 +95,7 @@ class HomeViewController: UITableViewController  {
         if let viewModels = examples[sectionKey], indexPath.row < viewModels.count {
             let viewModel = viewModels[indexPath.row]
             let detailViewController = viewModel.viewController.init()
+            detailViewController.title = viewModel.name
             navigationController?.pushViewController(detailViewController, animated: true)
         }
     }

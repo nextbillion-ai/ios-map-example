@@ -38,6 +38,7 @@ class AddMapStyleLayerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         nbMapView = NGLMapView(frame:self.view.bounds)
+        nbMapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         button = UIButton(type: .system)
         button.setTitle("Settings", for: .normal)
         button.addTarget(self, action: #selector(showSetings), for: .touchUpInside)
@@ -65,33 +66,29 @@ class AddMapStyleLayerViewController: UIViewController {
         
     }
     
+    /// Copies features from the current viewport into a runtime highlight layer.
+    /// Call after style loading, on the main thread, as with other style mutations.
     func addQueryFeaturesLayer() {
-        let queryRect = self.nbMapView.bounds.insetBy(dx: 100, dy: 200)
-        let visibleFeatures = self.nbMapView.visibleFeatures(in: queryRect) as? [NGLShape & NGLFeature]
-        
-        let querySourceID = "query-source-id"
-        let queryLayerID = "query-layer-id"
-        
-        if let layer = self.nbMapView.style?.layer(withIdentifier: queryLayerID) {
-            self.nbMapView.style?.removeLayer(layer)
-        }
-        
-        if let source = self.nbMapView.style?.source(withIdentifier: querySourceID) {
-            self.nbMapView.style?.removeSource(source)
-        }
-        
-        DispatchQueue.main.async {
-            let shapeSource = NGLShapeSource(identifier: querySourceID, features: visibleFeatures!, options: nil)
-            self.nbMapView.style?.addSource(shapeSource)
-            
-            let fillLayer = NGLFillStyleLayer(identifier: queryLayerID, source: shapeSource)
-            fillLayer.fillColor = NSExpression(forConstantValue: UIColor.blue)
-            fillLayer.fillOpacity = NSExpression(forConstantValue: 0.5)
-            self.nbMapView.style?.addLayer(fillLayer)
-        }
-        
+        guard let style = nbMapView.style else { return }
+        let queryRect = nbMapView.bounds.insetBy(dx: 100, dy: 200)
+        guard !queryRect.isEmpty else { return }
+        // A shape source needs feature geometry; skip query results that do not
+        // conform to both NGLShape and NGLFeature instead of forcing a conversion.
+        let features = nbMapView.visibleFeatures(in: queryRect).compactMap { $0 as? (NGLShape & NGLFeature) }
+        let sourceID = "query-source-id"
+        let layerID = "query-layer-id"
+        // Keep removal and insertion on this same style, without queued updates
+        // that can race another tap or a style reload.
+        if let layer = style.layer(withIdentifier: layerID) { style.removeLayer(layer) }
+        if let source = style.source(withIdentifier: sourceID) { style.removeSource(source) }
+        let source = NGLShapeSource(identifier: sourceID, features: features, options: nil)
+        style.addSource(source)
+        let layer = NGLFillStyleLayer(identifier: layerID, source: source)
+        layer.fillColor = NSExpression(forConstantValue: UIColor.blue)
+        layer.fillOpacity = NSExpression(forConstantValue: 0.5)
+        style.addLayer(layer)
     }
-    
+
     func addMultiShapeLayers() {
         nbMapView.zoomLevel = 10
         nbMapView.centerCoordinate = CLLocationCoordinate2D(latitude: 51.068585180672635, longitude: -114.06074523925781)
@@ -198,7 +195,8 @@ extension AddMapStyleLayerViewController: UITableViewDelegate, UITableViewDataSo
     }
     
     func dismissSettings(type: AddActionType) {
-        dismiss(animated: true)
-        performeSettings(type: type)
+        dismiss(animated: true) { [weak self] in
+            self?.performeSettings(type: type)
+        }
     }
 }

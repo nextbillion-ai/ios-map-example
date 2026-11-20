@@ -30,6 +30,8 @@ class AnnotationsViewController: UIViewController {
             }
         }
     }
+    private var annotationLoadID = UUID()
+
     var button: UIButton!
     
     let typeList = [
@@ -47,6 +49,7 @@ class AnnotationsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         nbMapView = NGLMapView(frame:self.view.bounds)
+        nbMapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         button = UIButton(type: .system)
         button.setTitle("Settings", for: .normal)
         button.addTarget(self, action: #selector(showSetings), for: .touchUpInside)
@@ -86,47 +89,52 @@ class AnnotationsViewController: UIViewController {
         
     }
     
-    func addAnnotations(count: Int32) {
-        
-        if let annotations = self.nbMapView.annotations {
-            self.nbMapView.removeAnnotations(annotations)
-        }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        annotationLoadID = UUID()
+    }
 
-        DispatchQueue.global(qos: .default).async {
-            if let featuresData = try? Data(contentsOf: Bundle.main.url(forResource: "points", withExtension: "geojson")!),
-                let features = try? JSONSerialization.jsonObject(with: featuresData, options: []) as? [String: Any] {
-                
-                var annotations = [NGLPointAnnotation]()
-                
-                if let featureList = features["features"] as? [[String: Any]] {
-                    for feature in featureList {
-                        if let coordinates = feature["geometry"] as? [String: Any],
-                           let coordinateList = coordinates["coordinates"] as? [Double],
-                           let title = feature["properties"] as? [String: Any] {
-                            
-                            let coordinate = CLLocationCoordinate2D(latitude: coordinateList[1], longitude: coordinateList[0])
-                            let annotation = NGLPointAnnotation()
-                            annotation.coordinate = coordinate
-                            annotation.title = title["NAME"] as? String
-                            
-                            annotations.append(annotation)
-                            
-                            if annotations.count == count {
-                                break
-                            }
-                        }
-                    }
-                    
-                    DispatchQueue.main.async {
-                        self.nbMapView.addAnnotations(annotations)
-                        self.nbMapView.showAnnotations(annotations, animated: true)
-                    }
-                }
+    func addAnnotations(count: Int32) {
+        // A new request invalidates older results. Leaving this page also changes
+        // this ID, so queued work cannot repopulate a screen that was dismissed.
+        annotationLoadID = UUID()
+        let loadID = annotationLoadID
+        guard count > 0, let url = Bundle.main.url(forResource: "points", withExtension: "geojson") else { return }
+        if let annotations = nbMapView.annotations { nbMapView.removeAnnotations(annotations) }
+        // Read and parse off the main thread, then apply SDK/UI changes on main.
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let data = try? Data(contentsOf: url) else { return }
+            let annotations = Self.parseAnnotations(data: data, limit: Int(count))
+            DispatchQueue.main.async { [weak self] in
+                guard let self, self.annotationLoadID == loadID else { return }
+                self.nbMapView.addAnnotations(annotations)
+                if !annotations.isEmpty { self.nbMapView.showAnnotations(annotations, animated: true) }
             }
         }
-
     }
-    
+
+    /// Reads up to `limit` valid Point features, skipping unsupported or malformed data.
+    static func parseAnnotations(data: Data, limit: Int) -> [NGLPointAnnotation] {
+        guard limit > 0,
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let features = json["features"] as? [[String: Any]] else { return [] }
+        var annotations: [NGLPointAnnotation] = []
+        for feature in features {
+            guard let geometry = feature["geometry"] as? [String: Any],
+                  geometry["type"] as? String == "Point",
+                  let coordinates = geometry["coordinates"] as? [Double], coordinates.count >= 2 else { continue }
+            // GeoJSON stores longitude first; CLLocationCoordinate2D takes latitude first.
+            let coordinate = CLLocationCoordinate2D(latitude: coordinates[1], longitude: coordinates[0])
+            guard CLLocationCoordinate2DIsValid(coordinate) else { continue }
+            let annotation = NGLPointAnnotation()
+            annotation.coordinate = coordinate
+            annotation.title = (feature["properties"] as? [String: Any])?["NAME"] as? String
+            annotations.append(annotation)
+            if annotations.count == limit { break }
+        }
+        return annotations
+    }
+
     func animateAnnotations () {
         let annot = NGLPointAnnotation()
         annot.coordinate = self.nbMapView.centerCoordinate
@@ -241,7 +249,8 @@ extension AnnotationsViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func dismissSettings(type: AnnotationActionType) {
-        dismiss(animated: true)
-        performeSettings(type: type)
+        dismiss(animated: true) { [weak self] in
+            self?.performeSettings(type: type)
+        }
     }
 }

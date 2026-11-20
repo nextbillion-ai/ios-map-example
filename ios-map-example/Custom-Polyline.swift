@@ -14,6 +14,7 @@ class PolylineViewController: UIViewController {
     }
     
     var points : Array = [CLLocationCoordinate2D]()
+    private var displayedPolyline: NGLPolyline?
     
     func configureMapView(_ mapView: NGLMapView) {
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -44,7 +45,11 @@ class PolylineViewController: UIViewController {
     func drawPolyline(){
         if(points.count > 1){
             let line = NGLPolyline(coordinates:points,count: UInt(points.count))
+            // Replace the displayed geometry so repeated edits do not retain every
+            // historical prefix of the line and grow the stored coordinate count.
+            if let previous = displayedPolyline { nbMapView.removeAnnotation(previous) }
             nbMapView.addAnnotation(line)
+            displayedPolyline = line
             
         }
     }

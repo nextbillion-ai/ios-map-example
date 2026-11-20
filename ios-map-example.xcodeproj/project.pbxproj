@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A23300000000000000000001 /* HouseNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23300000000000000000002 /* HouseNumberViewController.swift */; };
 		0C70571C2A31BAEB00FC13EC /* AnnotationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C70571B2A31BAEB00FC13EC /* AnnotationsViewController.swift */; };
 		0C70571F2A31BB3F00FC13EC /* points.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 0C70571E2A31BB3E00FC13EC /* points.geojson */; };
 		41AE10062A28413900E6233F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41AE10052A28413900E6233F /* AppDelegate.swift */; };
@@ -73,6 +74,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A23300000000000000000002 /* HouseNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseNumberViewController.swift; sourceTree = "<group>"; };
 		0C70571B2A31BAEB00FC13EC /* AnnotationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationsViewController.swift; sourceTree = "<group>"; };
 		0C70571E2A31BB3E00FC13EC /* points.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = points.geojson; sourceTree = "<group>"; };
 		41AE10022A28413900E6233F /* ios-map-example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-map-example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -181,6 +183,7 @@
 				41AE10412A2845A700E6233F /* CustomUserLocationAnnotationView.swift */,
 				41AE103C2A2845A400E6233F /* Directions.swift */,
 				41AE10452A2845A900E6233F /* HomeViewController.swift */,
+				A23300000000000000000002 /* HouseNumberViewController.swift */,
 				41AE103A2A2845A300E6233F /* Map-Configration.swift */,
 				41AE10372A2845A100E6233F /* Maps-Camera.swift */,
 				41AE10382A2845A200E6233F /* Maps-Location-Style.swift */,
@@ -359,7 +362,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				41AE100A2A28413900E6233F /* ViewController.swift in Sources */,
-				41AE10572A2845AB00E6233F /* ViewController.swift in Sources */,
 				41AE104F2A2845AB00E6233F /* Directions.swift in Sources */,
 				41AE10532A2845AB00E6233F /* AddMapStyleLayerViewController.swift in Sources */,
 				41AE10512A2845AB00E6233F /* Mapview-Delegate.swift in Sources */,
@@ -370,11 +372,11 @@
 				41AE104D2A2845AB00E6233F /* Map-Configration.swift in Sources */,
 				41AE10502A2845AB00E6233F /* Custom-PuckView.swift in Sources */,
 				41AE10552A2845AB00E6233F /* Custom-Polyline.swift in Sources */,
-				41AE10562A2845AB00E6233F /* SceneDelegate.swift in Sources */,
 				0C70571C2A31BAEB00FC13EC /* AnnotationsViewController.swift in Sources */,
 				41AE10542A2845AB00E6233F /* CustomUserLocationAnnotationView.swift in Sources */,
 				41AE10082A28413900E6233F /* SceneDelegate.swift in Sources */,
 				41AE10582A2845AB00E6233F /* HomeViewController.swift in Sources */,
+				A23300000000000000000001 /* HouseNumberViewController.swift in Sources */,
 				41AE105A2A2845AB00E6233F /* Custom-Marker.swift in Sources */,
 				41AE104E2A2845AB00E6233F /* Custom-Location-Source.swift in Sources */,
 				41AE10592A2845AB00E6233F /* AnimateMapLayerViewController.swift in Sources */,
